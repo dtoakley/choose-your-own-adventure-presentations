@@ -1,0 +1,20 @@
+##
+# Sets up and configures Supervisor for Celery and Celerybeat
+##
+
+- name: create supervisor template for celery to run
+  template: src=supervisor_celery.conf.j2
+            dest=/etc/supervisor/conf.d/{{ app_name }}_celery.conf
+
+- name: create supervisor template for celerybeat to run
+  template: src=supervisor_celerybeat.conf.j2
+            dest=/etc/supervisor/conf.d/{{ app_name }}_celerybeat.conf
+
+- name: stop supervisor for celery
+  command: service supervisor stop
+  
+- name: pause for restart to take effect
+  pause: seconds=2
+
+- name: start supervisor for celery
+  command: service supervisor start

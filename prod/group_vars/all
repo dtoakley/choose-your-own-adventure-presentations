@@ -1,0 +1,59 @@
+
+## app vars
+app_name: cyoa
+deploy_user: deployer
+deploy_group: deployers
+
+## this is the local directory with the SSH keys and known_hosts
+## file do not include a trailing slash
+ssh_dir: ~/.ssh
+
+## deploy_ssl true for HTTPS, false for only HTTP
+deploy_ssl: true
+wsgi_server_port: 8000
+fqdn: cyoa.danlt.xyz
+app_dir: /home/{{ deploy_user }}/{{ app_name }}
+
+## local directory SSL certificates should be located here
+ssl_certs_dir: ~/projects/choose-your-own-adventure-presentations/ssl_cert
+
+## this is the local directory with the deploy_key and deploy_key.pub
+## files. do not include a trailing slash
+local_deploy_key_dir: ~/projects/choose-your-own-adventure-presentations/deploy_key
+code_repository: ssh://git@github.com/dtoakley/cyoa.git
+
+## database
+db_url: postgresql://{{deploy_user}}:{{db_password}}@localhost/{{app_name}}
+db_password: Ty83NMowgt2
+db_name: "{{ app_name }}"
+db_user: "{{ deploy_user }}"
+
+## application dependancies 
+venv_dir: "{{ app_dir }}/venv"
+venv_python: "{{ venv_dir }}/bin/python"
+wsgi_env_vars: {
+  DEBUG: True,  
+  SECRET_KEY: 'productionkey',
+  DATABASE_URL: '{{ db_url }}',
+  REDIS_SERVER: 'localhost',
+  REDIS_PORT: 6379,
+  REDIS_DB: 1,
+  TWILIO_ACCOUNT_SID: 'ACf5d8f5ee31e3e33f1b2d6033408b61e3',
+  TWILIO_AUTH_TOKEN: '348f8fb966432164f116c48379a173bf',
+  TWILIO_NUMBER: '+441484906149',
+  CELERY_BROKER_URL: 'redis://localhost:6379/0',
+  CELERY_RESULT_BACKEND: 'redis://localhost:6379/0'
+}
+
+app_admin_user: 'wizard'
+app_admin_password: 'wizpwd'
+
+## task queues
+deployment_alert: true
+alert_number: '+447956213360'
+
+## ci
+deploy_user_password: "{{ lookup('env', 'REMOTE_DEPLOYER_PASSWORD') }}"
+
+
+

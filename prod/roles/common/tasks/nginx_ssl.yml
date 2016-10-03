@@ -1,0 +1,26 @@
+##
+# Configuration for nginx web server
+##
+
+- name: install nginx via the system package
+  apt: name=nginx state=present update_cache=yes
+
+- name: create nginx ssl directory if it does not exist
+  file: path=/etc/nginx/{{ app_name }} state=directory
+
+- name: write SSL certicate files
+  copy: src={{ ssl_certs_dir }}/{{ app_name }}.crt
+        dest=/etc/nginx/{{ app_name }}/{{ app_name }}.crt
+
+- name: write SSL key file
+  copy: src={{ ssl_certs_dir }}/{{ app_name }}.key
+        dest=/etc/nginx/{{ app_name }}/{{ app_name }}.key
+
+- name: ensure default symbolic linked website is deleted
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: write SSL nginx file Configuration
+  template: src=nginx_ssl.conf.j2
+            dest=/etc/nginx/conf.d/{{ app_name }}.conf
+  notify:
+      - restart nginx
